@@ -19,7 +19,7 @@ HEIGHT = 768
 SCREEN_SIZE = (WIDTH, HEIGHT)
 GAME_SCREEN_NAME = "MacGyver Escape RoOm" # Game screen name
 GAME_SCREEN_BACKGROUND = (0, 0, 0) # Game screen background color
-FPS = 24 # Framerate screen
+FPS = 60 # Framerate screen
 
 # map settings
 TILESIZE = 32

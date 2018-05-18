@@ -2,7 +2,7 @@
 # coding: utf-8
 from master.gamepad import GamePad
 from master.map import Map
-from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT
+from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK
 from module.player import Player
 
 
@@ -22,6 +22,7 @@ class GameManager():
         self.screen = GAME.display.set_mode(SCREEN_SIZE)
         # initialise object manage game time
         self.clock = GAME.time.Clock()
+        GAME.key.set_repeat(200, 100)
         self.new()
 
     def new(self):
@@ -33,6 +34,8 @@ class GameManager():
         self.all_sprites = GAME.sprite.Group()
         # create a game pad controller
         self.gamepad = GamePad()
+        self.gamepad.lock_diagonal = True
+
         # init map
         self.map = Map()
         self.player = Player(0, 0)
@@ -41,9 +44,9 @@ class GameManager():
     def run(self):
         """ run game """
         # update clock game time by frame rate
-        self.clock.tick(FPS)
-
-        self.update(self.clock.get_time())
+        dt = self.clock.tick(FPS) / 1000
+        self.events()
+        self.update(dt)
         self.draw()
 
     def update(self, dt):
@@ -52,15 +55,13 @@ class GameManager():
         dt -- integer Delta time time between 2 update Main Loop
 
         """
-        # process input (events)
-        self.gamepad.hook_events()
 
         self.all_sprites.update(dt)
 
     def draw(self):
         """ draw module """
         # clear window
-        # self.screen.fill(GREEN)
+        self.screen.fill(BLACK)
         self.draw_grid()
         # draw map
         #self.screen.blit(self.map.map_img, self.map.map_rect)
@@ -81,7 +82,13 @@ class GameManager():
         manage game events
         :return:
         """
-        pass
+        # process input (events)
+        self.gamepad.hook_events()
+        self.player.move(*self.gamepad.direction)
+
+        # if user close the game
+        if self.gamepad.close :
+            self.close = True
 
     def quit(self):
         """ leaved the game """
