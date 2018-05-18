@@ -22,6 +22,15 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.y = y
 
+    def move(self, dx=0, dy=0):
+        """
+        move player to a direction
+        :param dx: int
+        :param dy: int
+        :return:
+        """
+        self.x += dx
+        self.y += dy
 
     def update(self, dt):
         self.rect.x = self.x * TILESIZE

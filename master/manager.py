@@ -1,12 +1,13 @@
 #! /usr/bin/env python3
 # coding: utf-8
+from master.gamepad import GamePad
 from master.map import Map
 from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT
 from module.player import Player
 
 
 class GameManager():
-    """ class manage game """
+    """ this class manage game """
 
     # close game
     close = False
@@ -24,10 +25,14 @@ class GameManager():
         self.new()
 
     def new(self):
-        # initialize new instance for game
+        """
+        initialize new instance for game
+        :return:
+        """
         # create a new sprite group
         self.all_sprites = GAME.sprite.Group()
-
+        # create a game pad controller
+        self.gamepad = GamePad()
         # init map
         self.map = Map()
         self.player = Player(0, 0)
@@ -47,6 +52,9 @@ class GameManager():
         dt -- integer Delta time time between 2 update Main Loop
 
         """
+        # process input (events)
+        self.gamepad.hook_events()
+
         self.all_sprites.update(dt)
 
     def draw(self):
@@ -68,5 +76,13 @@ class GameManager():
         for y in range(0, HEIGHT, TILESIZE):
             GAME.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
+    def events(self):
+        """
+        manage game events
+        :return:
+        """
+        pass
+
     def quit(self):
+        """ leaved the game """
         GAME.quit()
