@@ -6,21 +6,25 @@ import pygame
 
 MAP_COLUMN = 15 # Grid column size
 MAP_ROW = 15 # Grid row size
-CELL_WIDTH = 32 # Grid cell Width
-CELL_HEIGHT = 32 # Grid cell Height
 MAP_ITEMS = ["5", "6", "7"] # Lis of items ID
 ITEMS_SPACE = 2 # Distance between items
 
 
 
+
 # Settings constant game screen
 # Game screen width size  height size
-WIDTH = 320
-HEIGHT = 320
+WIDTH = 1024
+HEIGHT = 768
 SCREEN_SIZE = (WIDTH, HEIGHT)
 GAME_SCREEN_NAME = "MacGyver Escape RoOm" # Game screen name
 GAME_SCREEN_BACKGROUND = (0, 0, 0) # Game screen background color
 FPS = 24 # Framerate screen
+
+# map settings
+TILESIZE = 32
+GRIDWIDTH = WIDTH / TILESIZE
+GRIDHEIGHT = HEIGHT / TILESIZE
 
 # define colors
 BLACK = (0, 0, 0)
@@ -28,6 +32,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+LIGHTGREY = (100, 100, 100)
 
 GAME = pygame
 

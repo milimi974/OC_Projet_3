@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 from master.map import Map
-from master.settings import GAME, SCREEN_SIZE, FPS, GREEN
+from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT
+from module.player import Player
 
 
 class GameManager():
@@ -9,8 +10,7 @@ class GameManager():
 
     # close game
     close = False
-    # create a new sprite group
-    all_sprites = GAME.sprite.Group()
+
 
 
     def __init__(self):
@@ -21,8 +21,17 @@ class GameManager():
         self.screen = GAME.display.set_mode(SCREEN_SIZE)
         # initialise object manage game time
         self.clock = GAME.time.Clock()
+        self.new()
+
+    def new(self):
+        # initialize new instance for game
+        # create a new sprite group
+        self.all_sprites = GAME.sprite.Group()
+
         # init map
         self.map = Map()
+        self.player = Player(0, 0)
+        self.all_sprites.add(self.player)
 
     def run(self):
         """ run game """
@@ -43,12 +52,21 @@ class GameManager():
     def draw(self):
         """ draw module """
         # clear window
-        #self.screen.fill(GREEN)
+        # self.screen.fill(GREEN)
+        self.draw_grid()
         # draw map
-        self.screen.blit(self.map.map_img, self.map.map_rect)
+        #self.screen.blit(self.map.map_img, self.map.map_rect)
         self.all_sprites.draw(self.screen)
         # drawing everything, flip the display
         GAME.display.flip()
+
+    def draw_grid(self):
+        """ draw a grid """
+        for x in range(0, WIDTH, TILESIZE):
+            GAME.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+
+        for y in range(0, HEIGHT, TILESIZE):
+            GAME.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def quit(self):
         GAME.quit()
