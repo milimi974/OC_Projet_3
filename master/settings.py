@@ -32,5 +32,12 @@ RED = (255, 0, 0)
 GAME = pygame
 
 # game path
-GAME_PATH = os.path.dirname(__file__)
+GAME_PATH = os.path.dirname(os.path.dirname(__file__))
 ASSET_FOLDER = os.path.join(GAME_PATH, "assets")
+
+
+# map list in order to draw 0 => map1
+MAP_TMX_FILENAME = [
+    'map1.tmx',
+    'map2.tmx',
+]

@@ -1,12 +1,25 @@
 #! /usr/bin/env python3
 # coding: utf-8
+from os import path
 from pytmx import pytmx
 from pytmx.util_pygame import load_pygame
 
-from master.settings import GAME
+from master.settings import GAME, MAP_TMX_FILENAME, ASSET_FOLDER
 
 
 class Map():
+    """ this manage map """
+    def __init__(self):
+        """ constructor """
+        # init first map
+        self.current_map = 0
+        # init map list
+        self.maps_tmx = MAP_TMX_FILENAME
+        # map container
+        self.map = False
+
+        # load first map
+        self.load(self.current_map)
 
     # load a map
     def load(self, level):
@@ -15,7 +28,12 @@ class Map():
         :param level:
         :return:
         """
-
+        # if level exist
+        if self.maps_tmx[level]:
+            filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[level])
+            self.map = TileMap(filename)
+            self.map_img = self.map.make_map()
+            self.map_rect = self.map_img.get_rect()
 
 class TileMap:
     """ this manage map format tmx """
@@ -40,8 +58,8 @@ class TileMap:
         :param surface: object pygame screen
         :return:
         """
-        # object contain tile image
-        ti = self.tmxdata.get_tile_image_by_id_gid
+        # create a short method name
+        ti = self.tmxdata.get_tile_image_by_gid
         # loop of all visible layers
         for layer in self.tmxdata.visible_layers:
             # if layer are a tile layer

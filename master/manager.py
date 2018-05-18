@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # coding: utf-8
+from master.map import Map
 from master.settings import GAME, SCREEN_SIZE, FPS, GREEN
 
 
@@ -20,6 +21,8 @@ class GameManager():
         self.screen = GAME.display.set_mode(SCREEN_SIZE)
         # initialise object manage game time
         self.clock = GAME.time.Clock()
+        # init map
+        self.map = Map()
 
     def run(self):
         """ run game """
@@ -40,7 +43,9 @@ class GameManager():
     def draw(self):
         """ draw module """
         # clear window
-        self.screen.fill(GREEN)
+        #self.screen.fill(GREEN)
+        # draw map
+        self.screen.blit(self.map.map_img, self.map.map_rect)
         self.all_sprites.draw(self.screen)
         # drawing everything, flip the display
         GAME.display.flip()
