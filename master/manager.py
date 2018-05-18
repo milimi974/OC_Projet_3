@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
-from master.gamepad import GamePad
 from master.map import Map
-from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK
+from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, GAMEPAD, \
+    PLAYER_MOVE
 from module.player import Player
 
 
@@ -22,6 +22,8 @@ class GameManager():
         self.screen = GAME.display.set_mode(SCREEN_SIZE)
         # initialise object manage game time
         self.clock = GAME.time.Clock()
+        if PLAYER_MOVE == "cell":
+            GAME.key.set_repeat(200, 100)
         GAME.key.set_repeat(200, 100)
         self.new()
 
@@ -32,9 +34,6 @@ class GameManager():
         """
         # create a new sprite group
         self.all_sprites = GAME.sprite.Group()
-        # create a game pad controller
-        self.gamepad = GamePad()
-        self.gamepad.lock_diagonal = True
 
         # init map
         self.map = Map()
@@ -83,11 +82,10 @@ class GameManager():
         :return:
         """
         # process input (events)
-        self.gamepad.hook_events()
-        self.player.move(*self.gamepad.direction)
+        GAMEPAD.hook_events()
 
         # if user close the game
-        if self.gamepad.close :
+        if GAMEPAD.close :
             self.close = True
 
     def quit(self):

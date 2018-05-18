@@ -2,7 +2,7 @@
 # coding: utf-8
 import pygame
 
-from master.settings import GAME, TILESIZE, BLUE
+from master.settings import GAME, TILESIZE, BLUE, PLAYER_MOVE, GAMEPAD, PLAYER_SPEED
 
 
 class Player(pygame.sprite.Sprite):
@@ -29,9 +29,21 @@ class Player(pygame.sprite.Sprite):
         :param dy: int
         :return:
         """
+
         self.x += dx
         self.y += dy
 
+
     def update(self, dt):
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
+
+        dx, dy = GAMEPAD.direction
+        if PLAYER_MOVE == "cell":
+            self.move(dx=dx, dy=dy)
+            self.rect.x = self.x * TILESIZE
+            self.rect.y = self.y * TILESIZE
+
+        elif PLAYER_MOVE == "smooth":
+            dx = dx * PLAYER_SPEED * 100 * dt
+            dy = dy * PLAYER_SPEED * 100 * dt
+            self.move(dx=dx, dy=dy)
+            self.rect.topleft = (self.x, self.y)

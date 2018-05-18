@@ -82,3 +82,12 @@ class TileMap:
         # draw the map
         self.render(temp_surface)
         return temp_surface
+
+
+class Wall:
+    """ this manage wall """
+
+    def render(self):
+        """ render """
+        pass
+

@@ -1,5 +1,6 @@
 [
   "test/test_map.py::TestMap::()::test_loading_map_tmx",
   "test/test_map.py::TestMap::()::test_drawing_map_screen",
-  "test/test_player.py::TestPlayer::()::test_player_instantiate"
+  "test/test_player.py::TestPlayer::()::test_player_instantiate",
+  "test/test_player.py::TestPlayer::()::test_player_position_change"
 ]

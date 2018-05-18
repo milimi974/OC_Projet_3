@@ -3,6 +3,7 @@
 import os
 import pygame
 
+from master.gamepad import GamePad
 
 MAP_COLUMN = 15 # Grid column size
 MAP_ROW = 15 # Grid row size
@@ -36,6 +37,7 @@ LIGHTGREY = (100, 100, 100)
 
 GAME = pygame
 
+
 # game path
 GAME_PATH = os.path.dirname(os.path.dirname(__file__))
 ASSET_FOLDER = os.path.join(GAME_PATH, "assets")
@@ -46,3 +48,10 @@ MAP_TMX_FILENAME = [
     'map1.tmx',
     'map2.tmx',
 ]
+
+# player settings
+PLAYER_SPEED = 5
+PLAYER_MOVE = "cell" # player movement on screen cell or smooth
+
+# gamepad
+GAMEPAD = GamePad(GAME, lock_diagonal=True, player_move=PLAYER_MOVE)

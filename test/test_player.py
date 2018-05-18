@@ -26,3 +26,15 @@ class TestPlayer(object):
         assert player.x == 10
         assert player.y == 15
 
+    # test if player position change
+    def test_player_position_change(self):
+        player = Player(10, 15)
+        player.move(1, 2)
+        assert player.x == 11
+        assert player.y == 17
+        player.move(5, 2)
+        assert player.x == 16
+        assert player.y == 19
+        player.move(200, -500)
+        assert player.x == 216
+        assert player.y == -481
