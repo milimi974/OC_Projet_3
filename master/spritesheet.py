@@ -52,7 +52,7 @@ class Spritesheet:
         """
         return self.cells[row][col]
 
-    def get_animation(self, row, col, size):
+    def get_animation(self, row, col, size, speed=10):
         """
         return a list of sheet
         :param row: int
@@ -64,15 +64,16 @@ class Spritesheet:
         for i in range(size):
             list_images.append(self.get_sprite(row, col+i))
 
-        return Animation(list_images)
+        return Animation(list_images, speed)
 
 class Animation:
     """ this manage spritesheet animation """
 
-    def __init__(self, list_images):
+    def __init__(self, list_images, speed):
         """
         constructor
         :param list_images: list pygame.surface
+        :param speed: int speed between image changed
         """
         self.cells = list_images
         # max image in list
@@ -80,14 +81,19 @@ class Animation:
         # current image to return
         self.current = 0
         self.__image = self.cells[self.current]
+        self.speed = 0
+        self.dt = 100 / speed
 
     def next(self):
         """ return next image """
-        self.__image = self.cells[self.current]
-        self.current += 1
-        if self.current == self.max:
-            self.current = 0
-
+        if self.speed > 100:
+            self.__image = self.cells[self.current]
+            self.current += 1
+            if self.current == self.max:
+                self.current = 0
+            self.speed = 0
+        else:
+            self.speed += self.dt
     @property
     def image(self):
         # return next image

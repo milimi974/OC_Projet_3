@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         spritesheet = Spritesheet(PLAYER_SPRITESHEET,*PLAYER_TILESIZE)
         self.image = self.idle = spritesheet.get_sprite(1,0)
-        self.move_image = spritesheet.get_animation(0, 0, 2)
+        self.anim_walk = spritesheet.get_animation(0, 0, 2)
         self.rect = self.image.get_rect()
         self.pos = Vector2(x, y)
 
@@ -52,6 +52,6 @@ class Player(pygame.sprite.Sprite):
                 self.move(dx=dx, dy=dy)
                 self.rect.topleft = (self.pos.x, self.pos.y)
 
-            self.image = self.move_image.image
+            self.image = self.anim_walk.image
         else:
             self.image = self.idle
