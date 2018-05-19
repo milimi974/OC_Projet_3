@@ -2,12 +2,14 @@
 # coding: utf-8
 import sys, os
 
+import pygame as GAME
 
+from master.gamepad import GamePad
 
 GamePath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, GamePath)
 
-from master.settings import GAME, SCREEN_SIZE
+from master.settings import SCREEN_SIZE, PLAYER_DIAGONAL_MOVE, PLAYER_MOVE
 from module.player import Player
 
 # pygame initialization
@@ -22,13 +24,21 @@ class TestPlayer(object):
 
     # test if Player instantiate
     def test_player_instantiate(self):
-        player = Player(10, 15)
+        self.all_sprites = GAME.sprite.Group()
+        self.gamepad = GamePad(GAME,
+                               lock_diagonal=PLAYER_DIAGONAL_MOVE,
+                               player_move=PLAYER_MOVE)
+        player = Player(self, 10, 15)
         assert player.pos.x == 10
         assert player.pos.y == 15
 
     # test if player position change
     def test_player_position_change(self):
-        player = Player(10, 15)
+        self.all_sprites = GAME.sprite.Group()
+        self.gamepad = GamePad(GAME,
+                               lock_diagonal=PLAYER_DIAGONAL_MOVE,
+                               player_move=PLAYER_MOVE)
+        player = Player(self, 10, 15)
         player.move(1, 2)
         assert player.pos.x == 11
         assert player.pos.y == 17

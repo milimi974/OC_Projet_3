@@ -1,9 +1,12 @@
 #! /usr/bin/env python3
 # coding: utf-8
+import pygame
+
 from master.camera import Camera
+from master.gamepad import GamePad
 from master.map import Map
-from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, GAMEPAD, \
-    PLAYER_MOVE, CAM_HEIGHT, CAM_WIDTH, BLUE, ORANGE
+from master.settings import SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, \
+    PLAYER_MOVE, CAM_HEIGHT, CAM_WIDTH, BLUE, ORANGE, PLAYER_DIAGONAL_MOVE
 from module.player import Player
 
 
@@ -18,14 +21,15 @@ class GameManager():
     def __init__(self):
         """ constructor """
         # pygame initialization
-        GAME.init()
+        self.game = pygame
+        self.game.init()
+
         # create a new window
-        self.screen = GAME.display.set_mode(SCREEN_SIZE)
+        self.screen = self.game.display.set_mode(SCREEN_SIZE)
         # initialise object manage game time
-        self.clock = GAME.time.Clock()
+        self.clock = self.game.time.Clock()
         if PLAYER_MOVE == "cell":
-            GAME.key.set_repeat(200, 100)
-        GAME.key.set_repeat(200, 100)
+            self.game.key.set_repeat(200, 100)
         self.new()
 
     def new(self):
@@ -33,14 +37,21 @@ class GameManager():
         initialize new instance for game
         :return:
         """
+
+        # gamepad
+        self.gamepad = GamePad(self.game,
+                               lock_diagonal=PLAYER_DIAGONAL_MOVE,
+                               player_move=PLAYER_MOVE)
         # create a new sprite group
-        self.all_sprites = GAME.sprite.Group()
+        self.all_sprites = self.game.sprite.Group()
 
         # init map
         self.map = Map()
-        self.player = Player(0, 0)
-        self.all_sprites.add(self.player)
+        self.player = Player(self, 0, 0)
 
+        # collide object
+        for tile_object  in self.map.tmxdata.objects:
+            pass
         # camera
         self.camera = Camera(self.map.width, self.map.height)
 
@@ -74,15 +85,15 @@ class GameManager():
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         # self.all_sprites.draw(self.screen)
         # drawing everything, flip the display
-        GAME.display.flip()
+        self.game.display.flip()
 
     def draw_grid(self):
         """ draw a grid """
         for x in range(0, WIDTH, TILESIZE):
-            GAME.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+            self.game.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
 
         for y in range(0, HEIGHT, TILESIZE):
-            GAME.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            self.game.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def events(self):
         """
@@ -90,12 +101,12 @@ class GameManager():
         :return:
         """
         # process input (events)
-        GAMEPAD.hook_events()
+        self.gamepad.hook_events()
 
         # if user close the game
-        if GAMEPAD.close :
+        if self.gamepad.close :
             self.close = True
 
     def quit(self):
         """ leaved the game """
-        GAME.quit()
+        self.game.quit()

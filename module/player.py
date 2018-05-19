@@ -3,7 +3,7 @@
 import pygame
 from pygame.math import Vector2
 
-from master.settings import GAME, TILESIZE, BLUE, PLAYER_MOVE, GAMEPAD, PLAYER_SPEED, PLAYER_SPRITESHEET, \
+from master.settings import TILESIZE, BLUE, PLAYER_MOVE, PLAYER_SPEED, PLAYER_SPRITESHEET, \
     PLAYER_TILESIZE
 from master.spritesheet import Spritesheet
 
@@ -11,19 +11,23 @@ from master.spritesheet import Spritesheet
 class Player(pygame.sprite.Sprite):
     """ this manage player """
 
-    def __init__(self, x, y):
+    def __init__(self, manager, x, y):
         """
         constructor
+        :param manager: GameManager
         :param x: float x position on screen
         :param y: float y position on screen
         """
-        pygame.sprite.Sprite.__init__(self)
+        self.groups = manager.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
         spritesheet = Spritesheet(PLAYER_SPRITESHEET,*PLAYER_TILESIZE)
         self.image = self.idle = spritesheet.get_sprite(1,0)
         self.anim_walk = spritesheet.get_animation(0, 0, 2)
         self.rect = self.image.get_rect()
         self.pos = Vector2(x, y)
-        self.rot = 0
+        self.gamepad = manager.gamepad
+
 
 
     def move(self, dx=0, dy=0):
@@ -39,8 +43,8 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self, dt):
-        if GAMEPAD.is_move():
-            dx, dy = GAMEPAD.direction
+        if self.gamepad.is_move():
+            dx, dy = self.gamepad.direction
             if PLAYER_MOVE == "cell":
                 self.move(dx=dx, dy=dy)
                 self.pos * TILESIZE
@@ -53,6 +57,6 @@ class Player(pygame.sprite.Sprite):
                 self.move(dx=dx, dy=dy)
                 self.rect.topleft = (self.pos.x, self.pos.y)
 
-            self.image = pygame.transform.rotate(self.anim_walk.image, GAMEPAD.rotate)
+            self.image = pygame.transform.rotate(self.anim_walk.image, self.gamepad.rotate)
         else:
-            self.image = pygame.transform.rotate(self.idle, GAMEPAD.rotate)
+            self.image = pygame.transform.rotate(self.idle, self.gamepad.rotate)

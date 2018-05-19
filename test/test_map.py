@@ -5,8 +5,8 @@ GamePath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, GamePath)
 
 from master.map import Map
-from master.settings import GAME, SCREEN_SIZE
-
+from master.settings import  SCREEN_SIZE
+import pygame as GAME
 # pygame initialization
 GAME.init()
 # create a new window

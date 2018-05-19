@@ -29,7 +29,6 @@ RED = (255, 0, 0)
 ORANGE = (255, 51, 0)
 LIGHTGREY = (100, 100, 100)
 
-GAME = pygame
 
 
 # game path
@@ -49,9 +48,8 @@ PLAYER_ROT_SPEED = 5
 PLAYER_MOVE = "smooth" # player movement on screen cell or smooth
 PLAYER_SPRITESHEET = "spritesheet/character.png"
 PLAYER_TILESIZE = (41, 44)
+PLAYER_DIAGONAL_MOVE = True
 
-# gamepad
-GAMEPAD = GamePad(GAME, lock_diagonal=True, player_move=PLAYER_MOVE)
 
 # camera
 CAM_WIDTH = 500

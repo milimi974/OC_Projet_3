@@ -8,7 +8,7 @@ import pygame
 
 class GamePad():
 
-    def __init__(self, game,lock_diagonal=False, player_move="cell"):
+    def __init__(self, game, lock_diagonal=False, player_move="cell"):
         self.mouse_position = (0, 0)
         self.__direction = (0, 0)
         self.key_states = {}
