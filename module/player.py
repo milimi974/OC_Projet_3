@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.anim_walk = spritesheet.get_animation(0, 0, 2)
         self.rect = self.image.get_rect()
         self.pos = Vector2(x, y)
+        self.rot = 0
 
 
     def move(self, dx=0, dy=0):
@@ -52,6 +53,6 @@ class Player(pygame.sprite.Sprite):
                 self.move(dx=dx, dy=dy)
                 self.rect.topleft = (self.pos.x, self.pos.y)
 
-            self.image = self.anim_walk.image
+            self.image = pygame.transform.rotate(self.anim_walk.image, GAMEPAD.rotate)
         else:
-            self.image = self.idle
+            self.image = pygame.transform.rotate(self.idle, GAMEPAD.rotate)

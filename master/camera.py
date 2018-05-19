@@ -19,7 +19,12 @@ class Camera:
         self.height = height
 
     def apply(self, entity):
+        """ apply offset to object """
         return entity.rect.move(self.camera.topleft)
+
+    def apply_rect(self, rect):
+        """ apply offset to rect"""
+        return rect.move(self.camera.topleft)
 
     def update(self, target):
         """

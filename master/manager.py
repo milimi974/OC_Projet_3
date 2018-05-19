@@ -42,7 +42,7 @@ class GameManager():
         self.all_sprites.add(self.player)
 
         # camera
-        self.camera = Camera(CAM_WIDTH, CAM_HEIGHT)
+        self.camera = Camera(self.map.width, self.map.height)
 
 
     def run(self):
@@ -66,10 +66,10 @@ class GameManager():
     def draw(self):
         """ draw module """
         # clear window
-        self.screen.fill(ORANGE)
-        self.draw_grid()
+        self.screen.fill(BLACK)
+        #self.draw_grid()
         # draw map
-        # self.screen.blit(self.map.map_img, self.map.map_rect)
+        self.screen.blit(self.map.map_img, self.camera.apply_rect(self.map.map_rect))
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         # self.all_sprites.draw(self.screen)

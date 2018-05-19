@@ -17,6 +17,7 @@ class GamePad():
         self.lock_diagonal = lock_diagonal
         self.game = game
         self.player_move = player_move
+        self.__rotate = 0
 
 
     def is_key(self, keyname):
@@ -43,6 +44,16 @@ class GamePad():
     def direction(self, dir):
         self.__direction = dir
 
+    # return direction rotate
+    @property
+    def rotate(self):
+        return self.__rotate
+
+    # rotate setter unactive
+    @rotate.setter
+    def rotate(self, dir):
+        pass
+
     def hook_events(self):
         """ events keyboard"""
         
@@ -58,33 +69,45 @@ class GamePad():
                     if self.lock_diagonal:
                         if event.key == pygame.K_LEFT:
                             dx = -1
+                            self.__rotate = 180
                         elif event.key == pygame.K_RIGHT:
                             dx = 1
+                            self.__rotate = 0
                         elif event.key == pygame.K_UP:
                             dy = -1
+                            self.__rotate = 90
                         elif event.key == pygame.K_DOWN:
                             dy = 1
+                            self.__rotate = -90
 
                     else:
                         if event.key == pygame.K_LEFT:
                             dx = -1
+                            self.__rotate = 180
                         if event.key == pygame.K_RIGHT:
                             dx = 1
+                            self.__rotate = 0
                         if event.key == pygame.K_UP:
                             dy = -1
+                            self.__rotate = 90
                         if event.key == pygame.K_DOWN:
                             dy = 1
+                            self.__rotate = -90
 
         if self.player_move == "smooth":
             keys = self.game.key.get_pressed()
             if keys[pygame.K_LEFT]:
                 dx = -1
+                self.__rotate = 180
             elif keys[pygame.K_RIGHT]:
                 dx = 1
+                self.__rotate = 0
             elif keys[pygame.K_UP]:
                 dy = -1
+                self.__rotate = 90
             elif keys[pygame.K_DOWN]:
                 dy = 1
+                self.__rotate = -90
 
         self.direction = (dx, dy)
 

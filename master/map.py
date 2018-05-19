@@ -32,9 +32,11 @@ class Map():
         # if level exist
         if self.maps_tmx[level]:
             filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[level])
-            self.map = TileMap(filename)
-            self.map_img = self.map.make_map()
+            self.tile_map = TileMap(filename)
+            self.map_img = self.tile_map.make_map()
             self.map_rect = self.map_img.get_rect()
+            self.width = self.tile_map.width
+            self.height = self.tile_map.height
 
 
 class TileMap:
