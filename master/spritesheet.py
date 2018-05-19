@@ -5,7 +5,7 @@ from math import floor
 import pygame
 from os import path
 
-from master.settings import ASSET_FOLDER
+from master.settings import ASSET_FOLDER, WHITE
 
 
 class Spritesheet:
@@ -19,7 +19,7 @@ class Spritesheet:
         :param rows:
         """
 
-        self.sheet = pygame.image.load(path.join(ASSET_FOLDER, filename)).convert(24)
+        self.sheet = pygame.image.load(path.join(ASSET_FOLDER, filename)).convert_alpha()
 
         self.tilewidth = tilewidth
         self.tileheight = tileheight
@@ -38,7 +38,9 @@ class Spritesheet:
         :return: pygame image
         """
         # create a surface for the sheet
-        image = pygame.Surface((self.tilewidth, self.tileheight))
+        image = pygame.Surface((self.tilewidth, self.tileheight), pygame.SRCALPHA)
+
+
         # insert image into surface at position 0,0
         image.blit(self.sheet, (0,0), (x, y, self.tilewidth, self.tileheight))
         return image

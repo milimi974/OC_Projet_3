@@ -43,7 +43,7 @@ MAP_TMX_FILENAME = [
 ]
 
 # player settings
-PLAYER_SPEED = 5
+PLAYER_SPEED = 2
 PLAYER_ROT_SPEED = 5
 PLAYER_MOVE = "smooth" # player movement on screen cell or smooth
 PLAYER_SPRITESHEET = "spritesheet/character.png"
