@@ -1,8 +1,11 @@
 #! /usr/bin/env python3
 # coding: utf-8
 import pygame
+from pygame.math import Vector2
 
-from master.settings import GAME, TILESIZE, BLUE, PLAYER_MOVE, GAMEPAD, PLAYER_SPEED
+from master.settings import GAME, TILESIZE, BLUE, PLAYER_MOVE, GAMEPAD, PLAYER_SPEED, PLAYER_SPRITESHEET, \
+    PLAYER_TILESIZE
+from master.spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
@@ -15,12 +18,12 @@ class Player(pygame.sprite.Sprite):
         :param y: float y position on screen
         """
         pygame.sprite.Sprite.__init__(self)
-
-        self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.fill(BLUE)
+        spritesheet = Spritesheet(PLAYER_SPRITESHEET,*PLAYER_TILESIZE)
+        self.image = self.idle = spritesheet.get_sprite(1,0)
+        self.move_image = spritesheet.get_animation(0, 0, 2)
         self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
+        self.pos = Vector2(x, y)
+
 
     def move(self, dx=0, dy=0):
         """
@@ -30,20 +33,25 @@ class Player(pygame.sprite.Sprite):
         :return:
         """
 
-        self.x += dx
-        self.y += dy
+        self.pos.x += dx
+        self.pos.y += dy
 
 
     def update(self, dt):
+        if GAMEPAD.is_move():
+            dx, dy = GAMEPAD.direction
+            if PLAYER_MOVE == "cell":
+                self.move(dx=dx, dy=dy)
+                self.pos * TILESIZE
+                self.rect.x = self.pos.x
+                self.rect.y = self.pos.y
 
-        dx, dy = GAMEPAD.direction
-        if PLAYER_MOVE == "cell":
-            self.move(dx=dx, dy=dy)
-            self.rect.x = self.x * TILESIZE
-            self.rect.y = self.y * TILESIZE
+            elif PLAYER_MOVE == "smooth":
+                dx = dx * PLAYER_SPEED * 100 * dt
+                dy = dy * PLAYER_SPEED * 100 * dt
+                self.move(dx=dx, dy=dy)
+                self.rect.topleft = (self.pos.x, self.pos.y)
 
-        elif PLAYER_MOVE == "smooth":
-            dx = dx * PLAYER_SPEED * 100 * dt
-            dy = dy * PLAYER_SPEED * 100 * dt
-            self.move(dx=dx, dy=dy)
-            self.rect.topleft = (self.x, self.y)
+            self.image = self.move_image.image
+        else:
+            self.image = self.idle

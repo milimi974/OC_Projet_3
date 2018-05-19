@@ -29,6 +29,10 @@ class GamePad():
             if event.type == pygame.KEYDOWN:
                 return event.key == keyname
 
+    def is_move(self):
+        """ return if movement """
+        return not self.direction == (0, 0)
+
     # return direction move
     @property
     def direction(self):

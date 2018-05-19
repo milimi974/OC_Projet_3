@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 # coding: utf-8
+from master.camera import Camera
 from master.map import Map
 from master.settings import GAME, SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, GAMEPAD, \
-    PLAYER_MOVE
+    PLAYER_MOVE, CAM_HEIGHT, CAM_WIDTH, BLUE, ORANGE
 from module.player import Player
 
 
@@ -40,6 +41,10 @@ class GameManager():
         self.player = Player(0, 0)
         self.all_sprites.add(self.player)
 
+        # camera
+        self.camera = Camera(CAM_WIDTH, CAM_HEIGHT)
+
+
     def run(self):
         """ run game """
         # update clock game time by frame rate
@@ -56,15 +61,18 @@ class GameManager():
         """
 
         self.all_sprites.update(dt)
+        self.camera.update(self.player)
 
     def draw(self):
         """ draw module """
         # clear window
-        self.screen.fill(BLACK)
+        self.screen.fill(ORANGE)
         self.draw_grid()
         # draw map
-        #self.screen.blit(self.map.map_img, self.map.map_rect)
-        self.all_sprites.draw(self.screen)
+        # self.screen.blit(self.map.map_img, self.map.map_rect)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        # self.all_sprites.draw(self.screen)
         # drawing everything, flip the display
         GAME.display.flip()
 

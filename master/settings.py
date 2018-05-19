@@ -5,13 +5,6 @@ import pygame
 
 from master.gamepad import GamePad
 
-MAP_COLUMN = 15 # Grid column size
-MAP_ROW = 15 # Grid row size
-MAP_ITEMS = ["5", "6", "7"] # Lis of items ID
-ITEMS_SPACE = 2 # Distance between items
-
-
-
 
 # Settings constant game screen
 # Game screen width size  height size
@@ -23,7 +16,7 @@ GAME_SCREEN_BACKGROUND = (0, 0, 0) # Game screen background color
 FPS = 60 # Framerate screen
 
 # map settings
-TILESIZE = 32
+TILESIZE = 64
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
@@ -33,6 +26,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+ORANGE = (255, 51, 0)
 LIGHTGREY = (100, 100, 100)
 
 GAME = pygame
@@ -51,7 +45,13 @@ MAP_TMX_FILENAME = [
 
 # player settings
 PLAYER_SPEED = 5
-PLAYER_MOVE = "cell" # player movement on screen cell or smooth
+PLAYER_MOVE = "smooth" # player movement on screen cell or smooth
+PLAYER_SPRITESHEET = "spritesheet/character.png"
+PLAYER_TILESIZE = (41, 44)
 
 # gamepad
 GAMEPAD = GamePad(GAME, lock_diagonal=True, player_move=PLAYER_MOVE)
+
+# camera
+CAM_WIDTH = 500
+CAM_HEIGHT = 500

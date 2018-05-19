@@ -28,12 +28,14 @@ class Map():
         :param level:
         :return:
         """
+
         # if level exist
         if self.maps_tmx[level]:
             filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[level])
             self.map = TileMap(filename)
             self.map_img = self.map.make_map()
             self.map_rect = self.map_img.get_rect()
+
 
 class TileMap:
     """ this manage map format tmx """
