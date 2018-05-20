@@ -10,7 +10,6 @@ from pytmx.util_pygame import load_pygame
 from master.settings import MAP_TMX_FILENAME, ASSET_FOLDER
 
 
-
 class TileMap:
     """ this manage map format tmx """
 
@@ -53,7 +52,7 @@ class TileMap:
         """ return a surface width map draw in """
 
         # create a surface to draw the map
-        temp_surface = pygame.Surface((self.width, self.height))
+        temp_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         # draw the map
         self.render(temp_surface)
         return temp_surface
@@ -65,6 +64,7 @@ class Wall(pygame.sprite.Sprite):
     def __init__(self):
         """ render """
         pass
+
 
 class Obstacle(pygame.sprite.Sprite):
     """ this manage wall """
@@ -83,7 +83,8 @@ class Obstacle(pygame.sprite.Sprite):
 
         self.game = game
         self.rect = pygame.Rect(x, y, w, h)
-        self.pos = Vector2(x, y)
+        self.x = x
+        self.y = y
         self.rect.x = x
         self.rect.y = y
 

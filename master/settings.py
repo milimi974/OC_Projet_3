@@ -26,6 +26,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+CYAN = (0, 255, 255)
 ORANGE = (255, 51, 0)
 LIGHTGREY = (100, 100, 100)
 
@@ -49,8 +50,11 @@ PLAYER_MOVE = "smooth" # player movement on screen cell or smooth
 PLAYER_SPRITESHEET = "spritesheet/character.png"
 PLAYER_TILESIZE = (41, 44)
 PLAYER_DIAGONAL_MOVE = True
+PLAYER_BOX_COLLISION = pygame.Rect(0, 0, 41, 41)
 
 
 # camera
 CAM_WIDTH = 500
 CAM_HEIGHT = 500
+
+DEBUG = True

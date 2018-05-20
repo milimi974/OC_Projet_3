@@ -3,15 +3,16 @@
 import pygame
 from pygame.math import Vector2
 
+from master.function import collide_hit_rect
 from master.settings import TILESIZE, BLUE, PLAYER_MOVE, PLAYER_SPEED, PLAYER_SPRITESHEET, \
-    PLAYER_TILESIZE
+    PLAYER_TILESIZE, PLAYER_BOX_COLLISION
 from master.spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
     """ this manage player """
 
-    def __init__(self, manager, x, y):
+    def __init__(self, manager, x=0, y=0):
         """
         constructor
         :param manager: GameManager
@@ -20,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         """
         self.groups = manager.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = manager
 
         spritesheet = Spritesheet(PLAYER_SPRITESHEET,*PLAYER_TILESIZE)
         self.image = self.idle = spritesheet.get_sprite(1,0)
@@ -27,8 +29,21 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.pos = Vector2(x, y)
         self.gamepad = manager.gamepad
+        self.rect.centerx = self.pos.x
+        self.rect.centery = self.pos.y
+        self.hit_rect = PLAYER_BOX_COLLISION
 
-
+    def spawn(self, x, y):
+        """
+        spawn point position
+        :param x:
+        :param y:
+        :return:
+        """
+        tw, th = PLAYER_TILESIZE
+        self.pos = Vector2(x, y)
+        self.rect.centerx = self.pos.x
+        self.rect.centery = self.pos.y
 
     def move(self, dx=0, dy=0):
         """
@@ -43,20 +58,35 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self, dt):
+        dx, dy = self.gamepad.direction
         if self.gamepad.is_move():
-            dx, dy = self.gamepad.direction
+
             if PLAYER_MOVE == "cell":
                 self.move(dx=dx, dy=dy)
-                self.pos * TILESIZE
-                self.rect.x = self.pos.x
-                self.rect.y = self.pos.y
+                self.rect.centerx = self.pos.x
+                self.rect.centery = self.pos.y
 
             elif PLAYER_MOVE == "smooth":
                 dx = dx * PLAYER_SPEED * 100 * dt
                 dy = dy * PLAYER_SPEED * 100 * dt
                 self.move(dx=dx, dy=dy)
-                self.rect.topleft = (self.pos.x, self.pos.y)
+                self.rect.center = (self.pos.x, self.pos.y)
+                if pygame.sprite.spritecollideany(self, self.game.walls):
+                    self.move(dx=-dx, dy=-dy)
+                    self.rect.center = (self.pos.x, self.pos.y)
 
             self.image = pygame.transform.rotate(self.anim_walk.image, self.gamepad.rotate)
         else:
             self.image = pygame.transform.rotate(self.idle, self.gamepad.rotate)
+
+    def collide_with_walls(self, dx, dy):
+        """
+        collide with wall
+        :param dx: int
+        :param dy: int
+        :return:
+        """
+        for wall in self.game.walls:
+            if wall.pos.x == self.pos.x + dx and wall.pos.y == self.y + dy:
+                return True
+            return False
