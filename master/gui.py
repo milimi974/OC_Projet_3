@@ -2,7 +2,7 @@
 # coding: utf-8
 import pygame
 
-from master.settings import GUI_LAYER, CYAN, GUI_SPRITESHEET, TILESIZE, RED
+from master.settings import GUI_LAYER, CYAN, GUI_SPRITESHEET, TILESIZE, RED, GREEN, ORANGE, BLACK, PLAYER_HEALTH, YELLOW
 from master.spritesheet import Spritesheet
 
 
@@ -23,6 +23,10 @@ class GuiElement():
         self.active_image = False
         self.active_rect = False
         self.hover = False
+        self.is_event = False
+        self.is_status_bar= False
+        self.bar_value = 0
+        self.bar_value_default = 0
 
     def draw(self, surface):
         """
@@ -40,7 +44,7 @@ class GuiElement():
 
     def update(self, dt):
         if self.__visible:
-            if self.active_image:
+            if self.is_event and self.active_image:
                 mouse_pos = pygame.mouse.get_pos()
                 if mouse_pos[0] > self.rect.x and mouse_pos[0] < self.rect.x + self.rect.width and mouse_pos[1] > self.rect.y and mouse_pos[1] < self.rect.y + self.rect.height:
                     self.set_active(True)
@@ -48,6 +52,23 @@ class GuiElement():
                 else:
                     self.set_active(False)
                     self.hover = False
+            elif self.is_status_bar:
+                self.draw_status_bar()
+
+    def draw_status_bar(self):
+
+        percent = int(self.bar_value * 100 / self.bar_value_default)
+        if percent > 60:
+            color = GREEN
+        elif percent > 30:
+            color = YELLOW
+        else:
+            color = RED
+
+        width = int(self.rect.width * percent / 100)
+        rect = pygame.Rect(0, 0, width, 32)
+        self.image.fill(BLACK)
+        pygame.draw.rect(self.image, color, rect)
 
     def change_text(self, text):
         """
@@ -79,19 +100,20 @@ class Gui():
     def __init__(self, manager):
         self.game = manager
         self.elements = {}
+        self.menu = {}
+        self.btn = {}
         self.spritesheet = Spritesheet(GUI_SPRITESHEET, TILESIZE, TILESIZE)
         self.new()
 
     def new(self):
         """ add gui interface """
-        self.add_element("menu", self.create_menu())
+        self.add_menu("menu", self.create_menu())
         self.add_element("main", self.create_game_menu())
         self.add_element("message", self.create_message())
-        self.add_element("btn_start", self.create_btn("START",416,512))
+        self.add_btn("btn_start", self.create_btn("START",416,512))
         self.create_items()
-
-
-
+        self.create_level()
+        self.create_hp()
 
     def make_image(self, x=0, y=0, row=0, col=0, rows=1, cols=1):
         """
@@ -190,6 +212,65 @@ class Gui():
         menu = self.make_image(256, 128, 3, 0, 8, 8)
         return menu
 
+    def create_level(self):
+        """ level menu display"""
+        args = {
+            'x': 896,
+            'y': 0,
+            'row': 1,
+            'col': 6,
+            'rows': 1,
+            'cols': 2,
+        }
+        level = self.make_image(**args)
+        label = self.make_text(args['x'] + 24, args['y'] + 24, "CARTE 1", color=(255, 255, 255), font_size=24)
+        label.set_visible(True)
+        level.text = label
+
+        self.add_menu("level", level)
+
+    def create_hp(self):
+        """ level menu display"""
+        args = {
+            'x': 0,
+            'y': 0,
+            'row': 3,
+            'col': 8,
+            'rows': 1,
+            'cols': 4,
+        }
+        level = self.make_image(**args)
+        self.add_menu("hp_backgound", level)
+        args = {
+            'x': 56,
+            'y': 16,
+            'width': 170,
+            'height': 32,
+            'value': PLAYER_HEALTH,
+        }
+
+        self.add_menu("hp", self.create_status_bar(**args))
+
+    def create_status_bar(self, x, y, width, height, value=100):
+        """
+        create status bar
+        :param x:
+        :param y:
+        :param width:
+        :param height:
+        :return:
+        """
+        el = GuiElement(x, y)
+        el.bar_value = value
+        el.bar_value_default = value
+        el.is_status_bar = True
+        el.image = pygame.Surface((width, height))
+        el.rect = el.image.get_rect()
+        el.rect.x = x
+        el.rect.y = y
+        el.draw_status_bar()
+
+        return el
 
     def create_message(self):
         """ create message box """
@@ -236,6 +317,7 @@ class Gui():
         btn.text = btn_label
         btn.active_image = active_btn.image
         btn.active_rect = active_btn.rect
+        btn.is_event = True
 
         return btn
 
@@ -270,9 +352,18 @@ class Gui():
         }
         tube = self.make_image(**args)
         tube.set_visible(True)
-        self.add_element("ether", self.create_icon(ether.x, 0, ether))
-        self.add_element("aiguille", self.create_icon(aiguille.x, 0, aiguille))
-        self.add_element("tube", self.create_icon(tube.x, 0, tube))
+        args = {
+            'x': 512,
+            'y': 0,
+            'row': 1,
+            'col': 0,
+            'rows': 1,
+            'cols': 3,
+        }
+        self.add_menu("item_background", self.make_image(**args))
+        self.add_menu("ether", self.create_icon(ether.x, 0, ether))
+        self.add_menu("aiguille", self.create_icon(aiguille.x, 0, aiguille))
+        self.add_menu("tube", self.create_icon(tube.x, 0, tube))
 
     def create_icon(self, x, y, active_img):
         """
@@ -304,6 +395,24 @@ class Gui():
         """
         self.elements[name] = gui_element
 
+    def add_menu(self, name, gui_element):
+        """
+        add element to menu
+        :param name:
+        :param gui_element:
+        :return:
+        """
+        self.menu[name] = gui_element
+
+    def add_btn(self, name, gui_element):
+        """
+        add element to menu
+        :param name:
+        :param gui_element:
+        :return:
+        """
+        self.btn[name] = gui_element
+
     def set_visible(self, name, visible):
         """
         change element visibility
@@ -324,21 +433,22 @@ class Gui():
         if self.elements[name]:
             self.elements[name].set_active(visible)
 
+    def set_visible_menu(self, visible):
+        for name, element in self.menu.items():
+            element.set_visible(visible)
+
+    def set_visible_btn(self, name, visible):
+        self.btn[name].set_visible(visible)
+
     def set_mainmenu_visible(self, visible):
         """
         show main menu
         :param visible: bool
         :return:
         """
-        self.set_visible("menu", not visible)
+        self.set_visible_menu( not visible)
         self.set_visible("main", visible)
-        self.set_visible("btn_start", visible)
-
-    def set_menu_visible(self, visible):
-        self.set_visible("menu", visible)
-        self.set_visible("ether", visible)
-        self.set_visible("aiguille", visible)
-        self.set_visible("tube", visible)
+        self.set_visible_btn("btn_start", visible)
 
     def draw(self, surface):
         """
@@ -346,11 +456,23 @@ class Gui():
         :param surface:
         :return:
         """
+        for name, element in self.menu.items():
+            element.draw(surface)
+
         for name, element in self.elements.items():
             element.draw(surface)
-            pygame.draw.rect(surface, RED, element.rect, 1)
+
+        for name, element in self.btn.items():
+                    element.draw(surface)
 
 
-    def update(self, dt):
-        for name, element in self.elements.items():
+    def update(self, manager, dt):
+        for name, element in self.menu.items():
+            if name in manager.items_found:
+                element.set_active(True)
+            else:
+                element.set_active(False)
+            element.update(dt)
+
+        for name, element in self.btn.items():
             element.update(dt)

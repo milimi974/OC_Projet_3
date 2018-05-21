@@ -70,15 +70,17 @@ class TileMap:
         """ return item layer """
         return self.tmxdata.get_layer_by_name("items")
 
+
 class Item(pygame.sprite.Sprite):
     """ this manage item """
 
-    def __init__(self, game, pos, image, type):
+    def __init__(self, game, pos, image, type, name):
         """
         constructor
         :param game: GameManager
         :param pos: tuple x,y
         :param type: string
+        :param name: string
         """
         self._layer = ITEMS_LAYER
         self.groups = game.all_sprites, game.items
@@ -87,6 +89,7 @@ class Item(pygame.sprite.Sprite):
         self.game = game
         self.image = image
         self.type = type
+        self.name = name
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
@@ -118,11 +121,11 @@ class Obstacle(pygame.sprite.Sprite):
 class Map(TileMap):
     """ this manage map """
 
-    def __init__(self, game):
+    def __init__(self, game, level=0):
         """ constructor """
         super().__init__(game)
         # init first map
-        self.current_map = int(0)
+        self.current_map = level
         # init map list
         self.maps_tmx = MAP_TMX_FILENAME
 
@@ -130,7 +133,7 @@ class Map(TileMap):
         self.load()
 
     # load a map
-    def load(self, level=0):
+    def load(self):
         """
         load a new map
         :param level: int
@@ -138,9 +141,15 @@ class Map(TileMap):
         """
 
         # if level exist
-        if self.maps_tmx[int(level)]:
-            filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[level])
+        if len(self.maps_tmx) > self.current_map:
+            filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[self.current_map])
             self.new(filename)
             self.map_img = self.make_map()
             self.map_rect = self.map_img.get_rect()
 
+    # next map
+    def next(self):
+        self.current_map += 1
+        if len(self.maps_tmx) > self.current_map:
+            return self.current_map
+        return False

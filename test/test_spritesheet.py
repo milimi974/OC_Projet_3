@@ -17,10 +17,10 @@ class TestSpritesheet(object):
     def test_attributes_settings(self):
 
         sprite = Spritesheet(os.path.join(ASSET_FOLDER,"spritesheet/character.png"), 41, 44)
-        assert sprite.rows == 4
+        assert sprite.rows == 6
         assert sprite.cols == 2
-        assert sprite.totalCellCount == 8
-        assert len(sprite.cells) == 4
+        assert sprite.totalCellCount == 12
+        assert len(sprite.cells) == 6
 
     # test mapping sprite sheet
     def test_mapping_spritesheet(self):

@@ -22,10 +22,10 @@ class TestGui(object):
     # test create gui
     def test_create_gui(self):
         gui = Gui(GAME)
-        menu = gui.elements['menu']
-        assert menu.is_visible == True
-        menu.set_visible(False)
+        menu = gui.menu['menu']
         assert menu.is_visible == False
+        menu.set_visible(True)
+        assert menu.is_visible == True
 
 
     # test create image
