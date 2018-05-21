@@ -26,6 +26,9 @@ class GameManager():
         # pygame initialization
         self.game = pygame
         self.game.init()
+        self.pause = False
+        self.start = False
+        self.items_found = []
 
         # create a new window
         self.screen = self.game.display.set_mode(SCREEN_SIZE)
@@ -65,6 +68,7 @@ class GameManager():
             'y': 0,
         }
         self.gui = Gui(self)
+        self.gui.set_mainmenu_visible(True)
 
         # self.player = Player(self, 0, 0)
         layer = self.map.get_items_layer()
@@ -90,7 +94,21 @@ class GameManager():
         dt = self.clock.tick(FPS) / 1000
         self.events()
         self.update(dt)
-        self.draw()
+        if not self.start:
+            # game not strat
+            # draw gui
+            self.gui.draw(self.screen)
+
+            # self.all_sprites.draw(self.screen)
+            # drawing everything, flip the display
+            self.game.display.flip()
+        else:
+            if self.pause:
+                #game pause
+                pass
+            else:
+                # game running
+                self.draw()
 
     def update(self, dt):
         """ update module
@@ -101,6 +119,7 @@ class GameManager():
 
         self.all_sprites.update(dt)
         self.camera.update(self.player)
+        self.gui.update(dt)
 
     def object_tmx_center(self, object):
         """
@@ -162,6 +181,12 @@ class GameManager():
         """
         # process input (events)
         self.gamepad.hook_events()
+        # click on screen actions
+        if self.gamepad.leftclick and self.gui.elements["btn_start"].hover and not self.start:
+            self.start = True
+            self.gui.set_mainmenu_visible(False)
+            self.gui.set_menu_visible(True)
+
 
         # if user close the game
         if self.gamepad.close :

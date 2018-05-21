@@ -22,6 +22,7 @@ class GuiElement():
         self.active = False
         self.active_image = False
         self.active_rect = False
+        self.hover = False
 
     def draw(self, surface):
         """
@@ -36,6 +37,17 @@ class GuiElement():
                 surface.blit(self.image, self.rect)
             if self.text:
                 surface.blit(self.text.image, self.text.rect)
+
+    def update(self, dt):
+        if self.__visible:
+            if self.active_image:
+                mouse_pos = pygame.mouse.get_pos()
+                if mouse_pos[0] > self.rect.x and mouse_pos[0] < self.rect.x + self.rect.width and mouse_pos[1] > self.rect.y and mouse_pos[1] < self.rect.y + self.rect.height:
+                    self.set_active(True)
+                    self.hover = True
+                else:
+                    self.set_active(False)
+                    self.hover = False
 
     def change_text(self, text):
         """
@@ -73,8 +85,9 @@ class Gui():
     def new(self):
         """ add gui interface """
         self.add_element("menu", self.create_menu())
+        self.add_element("main", self.create_game_menu())
         self.add_element("message", self.create_message())
-        self.add_element("btn_start", self.create_btn("START",128,128))
+        self.add_element("btn_start", self.create_btn("START",416,512))
         self.create_items()
 
 
@@ -171,8 +184,12 @@ class Gui():
     def create_menu(self):
         """ create menu bar """
         menu = self.make_image(0, 0, 0, 0, 1, 16)
-        menu.set_visible(True)
         return menu
+
+    def create_game_menu(self):
+        menu = self.make_image(256, 128, 3, 0, 8, 8)
+        return menu
+
 
     def create_message(self):
         """ create message box """
@@ -185,7 +202,6 @@ class Gui():
             'cols' : 8,
         }
         panel = self.make_image(**args)
-        panel.set_visible(True)
         label = self.make_text(args['x'] + 32, args['y'] + 32, "",color=(255,255,0))
         label.set_visible(True)
         panel.text = label
@@ -218,7 +234,6 @@ class Gui():
         }
         btn = self.make_image(**args)
         btn.text = btn_label
-        btn.set_visible(True)
         btn.active_image = active_btn.image
         btn.active_rect = active_btn.rect
 
@@ -278,8 +293,6 @@ class Gui():
         item = self.make_image(**args)
         item.active_image = active_img.image
         item.active_rect = active_img.rect
-
-        item.set_visible(True)
         return item
 
     def add_element(self, name, gui_element):
@@ -305,11 +318,27 @@ class Gui():
         """
         active a element
         :param name: string
-        :param visible: boll
+        :param visible: bool
         :return:
         """
         if self.elements[name]:
             self.elements[name].set_active(visible)
+
+    def set_mainmenu_visible(self, visible):
+        """
+        show main menu
+        :param visible: bool
+        :return:
+        """
+        self.set_visible("menu", not visible)
+        self.set_visible("main", visible)
+        self.set_visible("btn_start", visible)
+
+    def set_menu_visible(self, visible):
+        self.set_visible("menu", visible)
+        self.set_visible("ether", visible)
+        self.set_visible("aiguille", visible)
+        self.set_visible("tube", visible)
 
     def draw(self, surface):
         """
@@ -322,3 +351,6 @@ class Gui():
             pygame.draw.rect(surface, RED, element.rect, 1)
 
 
+    def update(self, dt):
+        for name, element in self.elements.items():
+            element.update(dt)

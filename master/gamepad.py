@@ -18,6 +18,7 @@ class GamePad():
         self.game = game
         self.player_move = player_move
         self.__rotate = 0
+        self.leftclick = False
 
 
     def is_key(self, keyname):
@@ -58,12 +59,17 @@ class GamePad():
         """ events keyboard"""
         
         self.key_states = self.game.event.get()
+        self.leftclick = False
         dx, dy = (0, 0)
         """ save keypress event """
         for event in self.key_states:
             # check for closing window
             if event.type == pygame.QUIT:
                 self.close = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: # left click
+                    self.leftclick = True
+
             if self.player_move == "cell":
                 if event.type == pygame.KEYDOWN:
                     if self.lock_diagonal:
@@ -110,5 +116,8 @@ class GamePad():
                 self.__rotate = -90
 
         self.direction = (dx, dy)
+
+
+
 
 

@@ -7,7 +7,7 @@ GamePath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, GamePath)
 
 from master.settings import  SCREEN_SIZE
-from master.gui import Gui
+from master.gui import Gui, GuiElement
 import pygame as GAME
 # pygame initialization
 GAME.init()
@@ -38,3 +38,9 @@ class TestGui(object):
         image = gui.make_image(0, 0, 2, 3, 5, 6)
         assert image.rect.width == 384
         assert image.rect.height == 320
+
+    # test add element
+    def test_add_element(self):
+        gui = Gui(GAME)
+        gui.add_element("btn", gui.make_image(0, 0, 0, 0, 2, 2))
+        assert isinstance(gui.elements["btn"],  GuiElement)
