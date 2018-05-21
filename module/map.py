@@ -7,11 +7,18 @@ from pygame.math import Vector2
 from pytmx import pytmx
 from pytmx.util_pygame import load_pygame
 
-from master.settings import MAP_TMX_FILENAME, ASSET_FOLDER
+from master.settings import MAP_TMX_FILENAME, ASSET_FOLDER, ITEMS_LAYER, WALL_LAYER
 
 
 class TileMap:
     """ this manage map format tmx """
+
+    def __init__(self, game):
+        """
+        constructor
+        :param game: Gamemanager
+        """
+        self.game = game
 
     def new(self, filename):
         """
@@ -25,6 +32,7 @@ class TileMap:
         self.height = tm.height * tm.tileheight
         # get tmx object
         self.tmxdata = tm
+        # items object
 
     def render(self, surface):
         """
@@ -36,17 +44,18 @@ class TileMap:
         ti = self.tmxdata.get_tile_image_by_gid
         # loop of all visible layers
         for layer in self.tmxdata.visible_layers:
-            # if layer are a tile layer
-            if isinstance(layer, pytmx.TiledTileLayer):
-                # get position and tile id
-                for x, y, gid in layer:
-                    # get tile image
-                    tile = ti(gid)
-                    # if tile exist
-                    if tile:
-                        # draw tile
-                        surface.blit(tile, (x * self.tmxdata.tilewidth,
-                                            y * self.tmxdata.tileheight))
+            if not layer.name == "items":
+                # if layer are a tile layer
+                if isinstance(layer, pytmx.TiledTileLayer):
+                    # get position and tile id
+                    for x, y, gid in layer:
+                        # get tile image
+                        tile = ti(gid)
+                        # if tile exist
+                        if tile:
+                            # draw tile
+                            surface.blit(tile, (x * self.tmxdata.tilewidth,
+                                                y * self.tmxdata.tileheight))
 
     def make_map(self):
         """ return a surface width map draw in """
@@ -57,13 +66,29 @@ class TileMap:
         self.render(temp_surface)
         return temp_surface
 
+    def get_items_layer(self):
+        """ return item layer """
+        return self.tmxdata.get_layer_by_name("items")
 
-class Wall(pygame.sprite.Sprite):
-    """ this manage wall """
+class Item(pygame.sprite.Sprite):
+    """ this manage item """
 
-    def __init__(self):
-        """ render """
-        pass
+    def __init__(self, game, pos, image, type):
+        """
+        constructor
+        :param game: GameManager
+        :param pos: tuple x,y
+        :param type: string
+        """
+        self._layer = ITEMS_LAYER
+        self.groups = game.all_sprites, game.items
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.game = game
+        self.image = image
+        self.type = type
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
 
 
 class Obstacle(pygame.sprite.Sprite):
@@ -78,6 +103,7 @@ class Obstacle(pygame.sprite.Sprite):
         :param w: int
         :param h: int
         """
+        self._layer = WALL_LAYER
         self.groups = game.walls
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -92,9 +118,9 @@ class Obstacle(pygame.sprite.Sprite):
 class Map(TileMap):
     """ this manage map """
 
-    def __init__(self):
+    def __init__(self, game):
         """ constructor """
-        super().__init__()
+        super().__init__(game)
         # init first map
         self.current_map = int(0)
         # init map list
@@ -110,7 +136,7 @@ class Map(TileMap):
         :param level: int
         :return:
         """
-        print(level)
+
         # if level exist
         if self.maps_tmx[int(level)]:
             filename = path.join(path.join(ASSET_FOLDER, 'maps'), self.maps_tmx[level])

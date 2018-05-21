@@ -17,10 +17,10 @@ class TestSpritesheet(object):
     def test_attributes_settings(self):
 
         sprite = Spritesheet(os.path.join(ASSET_FOLDER,"spritesheet/character.png"), 41, 44)
-        assert sprite.rows == 2
+        assert sprite.rows == 4
         assert sprite.cols == 2
-        assert sprite.totalCellCount == 4
-        assert len(sprite.cells) == 2
+        assert sprite.totalCellCount == 8
+        assert len(sprite.cells) == 4
 
     # test mapping sprite sheet
     def test_mapping_spritesheet(self):
@@ -42,3 +42,14 @@ class TestSpritesheet(object):
         animation = sprite.get_animation(0, 0, 2)
         assert isinstance(animation,  Animation)
         assert type(animation.image) == pygame.Surface
+
+    # test create section_image
+    def test_create_section_image(self):
+        sprite = Spritesheet(os.path.join(ASSET_FOLDER, "spritesheet/gui.png"), 64, 64)
+        image = sprite.get_section_image(0, 0, 1, 16)
+        # if a surface
+        assert isinstance(image,  pygame.Surface)
+        # if size right
+        rect = image.get_rect()
+        assert rect.width == 1024
+        assert rect.height == 64

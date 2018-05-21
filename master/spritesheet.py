@@ -45,6 +45,48 @@ class Spritesheet:
         image.blit(self.sheet, (0,0), (x, y, self.tilewidth, self.tileheight))
         return image
 
+    def get_section_image(self, row, col, rows=1, cols=1):
+        """
+        return a sprite portion image
+        :param row: int
+        :param col: int
+        :param rows: int
+        :param cols: int
+        :return:
+        """
+        # create a surface for the sheet
+        image = pygame.Surface((cols*self.tilewidth, rows*self.tileheight), pygame.SRCALPHA)
+        x = y = 0
+        for r in range(row, row+rows):
+            for c in range(col, col+cols):
+                # insert image into surface at position c,r
+                sheet = self.get_image(c*self.tilewidth, r*self.tileheight)
+                image.blit(sheet, (x*self.tilewidth, y*self.tileheight), (0, 0, self.tilewidth, self.tileheight))
+                x += 1
+            x = 0
+            y += 1
+        return image
+
+    def create_surface(self, row, col, rows, cols):
+        """
+        create a surface fill with sprite
+        :param row: int
+        :param col: int
+        :param rows: int
+        :param cols: int
+        :return:
+        """
+        # create a surface for the sheet
+        image = pygame.Surface((cols * self.tilewidth, rows * self.tileheight), pygame.SRCALPHA)
+        x = y = 0
+        # insert image into surface at position c,r
+        sheet = self.get_image(col * self.tilewidth, row * self.tileheight)
+        for y in range(rows):
+            for x in range(cols):
+                image.blit(sheet, (x * self.tilewidth, y * self.tileheight), (0, 0, self.tilewidth, self.tileheight))
+
+        return image
+
     def get_sprite(self, row, col):
         """
         return an image by cell position
@@ -67,6 +109,7 @@ class Spritesheet:
             list_images.append(self.get_sprite(row, col+i))
 
         return Animation(list_images, speed)
+
 
 class Animation:
     """ this manage spritesheet animation """

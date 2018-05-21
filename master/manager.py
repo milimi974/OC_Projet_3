@@ -1,13 +1,16 @@
 #! /usr/bin/env python3
 # coding: utf-8
+import math
 import pygame
+from pygame.math import Vector2
 
 from master.camera import Camera
 from master.gamepad import GamePad
-from master.map import Map, Obstacle
-from master.settings import SCREEN_SIZE, FPS, GREEN, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, \
-    PLAYER_MOVE, CAM_HEIGHT, CAM_WIDTH, BLUE, ORANGE, PLAYER_DIAGONAL_MOVE, DEBUG, CYAN, RED
-from module.player import Player
+from master.gui import Gui
+from module.map import Map, Obstacle, Item
+from master.settings import SCREEN_SIZE, FPS, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, \
+    PLAYER_MOVE, PLAYER_DIAGONAL_MOVE, DEBUG, CYAN
+from module.charcater import Player
 
 
 class GameManager():
@@ -43,23 +46,43 @@ class GameManager():
                                lock_diagonal=PLAYER_DIAGONAL_MOVE,
                                player_move=PLAYER_MOVE)
         # create a new sprite group
-        self.all_sprites = self.game.sprite.Group()
+        self.all_sprites = self.game.sprite.LayeredUpdates()
         self.walls = self.game.sprite.Group()
+        self.items = self.game.sprite.Group()
+        self.mobs = self.game.sprite.Group()
 
         # init map
-        self.map = Map()
-       # self.player = Player(self, 0, 0)
+        self.map = Map(self)
 
+        # camera
+        self.camera = Camera(self.map.width, self.map.height)
+
+        # init gui
+        args = {
+            'width': WIDTH,
+            'height': 64,
+            'x': 0,
+            'y': 0,
+        }
+        self.gui = Gui(self)
+
+        # self.player = Player(self, 0, 0)
+        layer = self.map.get_items_layer()
+        tmxdata = self.map.tmxdata
         # collide object
-        for tile_object  in self.map.tmxdata.objects:
+        for tile_object  in tmxdata.objects:
             if tile_object.name == 'player':
-                self.player = Player(self, *self.object_tmx_center(tile_object))
+                self.player = Player(self, self.object_tmx_center(tile_object))
+
+            if tile_object.name == 'item':
+                object_pos = self.object_tmx_position(tile_object, tmxdata.tilewidth, tmxdata.tileheight)
+                for x, y, image in layer.tiles():
+                    tile_pos = (x*tmxdata.tilewidth, y*tmxdata.tileheight)
+                    if object_pos == tile_pos:
+                        Item(self, self.object_tmx_center(tile_object), image, tile_object.type)
 
             if tile_object.name == 'wall':
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-        # camera
-        self.camera = Camera(self.map.width, self.map.height)
-        print(self.map.width,self.map.height)
 
     def run(self):
         """ run game """
@@ -87,6 +110,16 @@ class GameManager():
         """
         x = object.x + (object.width / 2)
         y = object.y + (object.height / 2)
+        return Vector2(x, y)
+
+    def object_tmx_position(self, object, tilewidth, tileheight):
+        """
+        return position of object tmx x y
+        :param object: tmx
+        :return:
+        """
+        x = math.floor(object.x / tilewidth ) * tilewidth
+        y = math.floor(object.y / tilewidth ) * tileheight
         return (x, y)
 
     def draw(self):
@@ -106,6 +139,10 @@ class GameManager():
                pygame.draw.rect(self.screen, CYAN, self.camera.apply_rect(sprite.rect), 1)
 
         self.draw_grid()
+
+        # draw gui
+        self.gui.draw(self.screen)
+
         # self.all_sprites.draw(self.screen)
         # drawing everything, flip the display
         self.game.display.flip()
