@@ -91,5 +91,5 @@ EFFECTS_SOUNDS = {'level_start': 'level.wav',
 
 
 
-DEBUG = True
+DEBUG = False
 

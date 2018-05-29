@@ -27,3 +27,4 @@ class TestMap(object):
     def test_drawing_map_screen(self):
         map = Map(GAME)
         assert SCREEN.blit(map.map_img, map.map_rect)
+

@@ -51,3 +51,5 @@ class TestPlayer(object):
         player.move(200, -500)
         assert player.pos.x == 216
         assert player.pos.y == -481
+
+

@@ -9,9 +9,7 @@ from master.camera import Camera
 from master.gamepad import GamePad
 from master.gui import Gui
 from module.map import Map, Obstacle, Item
-from master.settings import SCREEN_SIZE, FPS, WIDTH, TILESIZE, LIGHTGREY, HEIGHT, BLACK, \
-    PLAYER_MOVE, PLAYER_DIAGONAL_MOVE, DEBUG, CYAN, MOB_DAMAGE, PLAYER_HEALTH, MUSICS, BG_MUSIC, EFFECTS_SOUNDS, SOUNDS, \
-    MOB_HIT_SOUNDS, MOB_MOAN_SOUNDS
+from master.settings import *
 from module.charcater import Player, Mob
 
 
@@ -20,8 +18,6 @@ class GameManager():
 
     # close game
     close = False
-
-
 
     def __init__(self):
         """ constructor """
@@ -35,6 +31,7 @@ class GameManager():
 
         # create a new window
         self.screen = self.game.display.set_mode(SCREEN_SIZE)
+        self.game.display.set_caption(GAME_SCREEN_NAME)
         # initialise object manage game time
         self.clock = self.game.time.Clock()
         if PLAYER_MOVE == "cell":
@@ -118,7 +115,6 @@ class GameManager():
         dt = self.clock.tick(FPS) / 1000
         self.events()
 
-
         if not self.start:
             # game not start
             self.gui.update(self, dt)
@@ -194,6 +190,7 @@ class GameManager():
             self.effects_sounds['level_start'].play()
         else:
             self.quit()
+
     def add_item(self, item):
         """
         player found item
@@ -238,7 +235,7 @@ class GameManager():
             for sprite in self.walls:
                pygame.draw.rect(self.screen, CYAN, self.camera.apply_rect(sprite.rect), 1)
 
-        self.draw_grid()
+
 
         # draw gui
         self.gui.draw(self.screen)
@@ -246,6 +243,7 @@ class GameManager():
         # self.all_sprites.draw(self.screen)
         if DEBUG:
             self.game.display.set_caption(str(self.player.health))
+            self.draw_grid()
         # drawing everything, flip the display
         self.game.display.flip()
 

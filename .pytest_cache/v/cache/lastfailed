@@ -1,5 +1,4 @@
 {
-  "test/test_gui.py::TestMap::()::test_drawing_map_screen": true,
-  "test/test_gui.py::TestMap::()::test_loading_map_tmx": true,
-  "test/test_map.py::TestMap::()::test_loading_map_file": true
+  "test/test_gui.py": true,
+  "test/test_spritesheet.py": true
 }

@@ -1,14 +1,9 @@
 [
-  "test/test_gui.py::TestGui::()::test_create_gui",
-  "test/test_gui.py::TestGui::()::test_create_image",
-  "test/test_gui.py::TestGui::()::test_add_element",
+  "test/test_manager.py::TestGameManager::()::test_game_create_item",
+  "test/test_manager.py::TestGameManager::()::test_game_create_player",
+  "test/test_manager.py::TestGameManager::()::test_game_change_map",
   "test/test_map.py::TestMap::()::test_loading_map_tmx",
   "test/test_map.py::TestMap::()::test_drawing_map_screen",
   "test/test_player.py::TestPlayer::()::test_player_instantiate",
-  "test/test_player.py::TestPlayer::()::test_player_position_change",
-  "test/test_spritesheet.py::TestSpritesheet::()::test_attributes_settings",
-  "test/test_spritesheet.py::TestSpritesheet::()::test_mapping_spritesheet",
-  "test/test_spritesheet.py::TestSpritesheet::()::test_image_created",
-  "test/test_spritesheet.py::TestSpritesheet::()::test_animation_object",
-  "test/test_spritesheet.py::TestSpritesheet::()::test_create_section_image"
+  "test/test_player.py::TestPlayer::()::test_player_position_change"
 ]

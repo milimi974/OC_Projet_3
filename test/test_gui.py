@@ -44,3 +44,5 @@ class TestGui(object):
         gui = Gui(GAME)
         gui.add_element("btn", gui.make_image(0, 0, 0, 0, 2, 2))
         assert isinstance(gui.elements["btn"],  GuiElement)
+
+
